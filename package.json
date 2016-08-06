@@ -1,0 +1,15 @@
+{
+  "name": "lsq-meta",
+  "version": "1.0.0",
+  "description": "Meta client for node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "lsq",
+    "meta"
+  ],
+  "author": "Antonio 'pelle' Pellegrino <pellepelle3@gmail.com> (http://lsq.io)",
+  "license": "ISC"
+}
