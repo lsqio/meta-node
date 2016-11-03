@@ -29,7 +29,7 @@ class Meta extends EventEmitter {
       return Promise.resolve(this._service.get(name).nodes)
 
     if (this._service.has(name))
-      return Promise.reject(new Error("Service has no health instances"))
+      return Promise.reject(new Error("Service " + name + " has no health instances"))
    
     return this._watchService(name)
   }
@@ -80,7 +80,7 @@ class Meta extends EventEmitter {
           this.emit('serviceChange',name)
         
         if (Array.isArray(res.body) && res.body.length == 0)
-          throw new Error("Service has no health instances")
+          throw new Error("Service " + name + " has no health instances")
 
         return this._service.get(name).nodes
       })
