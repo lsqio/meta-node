@@ -11,5 +11,13 @@
     "meta"
   ],
   "author": "Antonio 'pelle' Pellegrino <pellepelle3@gmail.com> (http://lsq.io)",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsqio/meta-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lsqio/meta-node/issues"
+  },
+  "homepage": "https://github.com/lsqio/meta-node#readme"
 }

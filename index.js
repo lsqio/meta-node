@@ -1,3 +1,4 @@
+'use strict'
 let http = require('http')
 let { EventEmitter } = require('events')
 class Meta extends EventEmitter {
@@ -23,7 +24,13 @@ class Meta extends EventEmitter {
   }
 
   service (name) {
-    return this._service.has(name) ? Promise.resolve(this._service.get(name).nodes) :  this._watchService(name)
+    if (this._service.has(name) && this._service.get(name).nodes && this._service.get(name).nodes.length > 0)
+      return Promise.resolve(this._service.get(name).nodes)
+
+    if (this._service.has(name))
+      return Promise.reject(new Error("Service has no health instances"))
+   
+    return this._watchService(name)
   }
   
   _watchConfig() {
@@ -53,6 +60,7 @@ class Meta extends EventEmitter {
 
         if(index < this._servicesIndex && JSON.stringify(services) !=  JSON.stringify(this._services))
           this.emit('servicesChange',this._services)  
+
         return this._services
       })
   }
@@ -69,6 +77,10 @@ class Meta extends EventEmitter {
         this._watchService(name)
         if(index < _index && JSON.stringify(nodes) !=  JSON.stringify(this._service.get(name).nodes))
           this.emit('serviceChange',name)
+        
+        if (Array.isArray(res.body) && res.body.length == 0)
+          throw new Error("Service has no health instances")
+
         return this._service.get(name).nodes
       })
   }
