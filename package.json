@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/lsqio/meta-node/issues"
   },
-  "homepage": "https://github.com/lsqio/meta-node#readme"
+  "homepage": "https://github.com/lsqio/meta-node#readme",
+  "dependencies": {
+    "promise": "^7.1.1"
+  }
 }

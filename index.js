@@ -1,5 +1,6 @@
 'use strict'
 let http = require('http')
+let Promise = require('promise')
 let { EventEmitter } = require('events')
 class Meta extends EventEmitter {
   constructor(){
