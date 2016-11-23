@@ -33,6 +33,13 @@ class Meta extends EventEmitter {
    
     return this._watchService(name)
   }
+
+  random (name) {
+    return this.service(name)
+      .then(services=>{
+        return services[Math.random() * this.length | 0]
+      })
+  }
   
   _watchConfig() {
     return this._call(`/v1/config?index=${this._configIndex}`,null,true)
