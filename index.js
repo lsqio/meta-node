@@ -36,9 +36,7 @@ class Meta extends EventEmitter {
 
   random (name) {
     return this.service(name)
-      .then(services=>{
-        return services[Math.random() * this.length | 0]
-      })
+      .then(services=> services[Math.random() * services.length | 0])
   }
   
   _watchConfig() {
