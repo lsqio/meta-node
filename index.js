@@ -52,6 +52,9 @@ class Meta extends EventEmitter {
           this.emit('configChange',this._config) 
 
         return this._config
+      }, err => {
+        this._config = undefined
+        throw err
       })
   }
 
@@ -68,6 +71,9 @@ class Meta extends EventEmitter {
           this.emit('servicesChange',this._services)  
 
         return this._services
+      }, err => {
+        this._services = undefined
+        throw err
       })
   }
 
@@ -88,6 +94,9 @@ class Meta extends EventEmitter {
           throw new Error("Service " + name + " has no health instances")
 
         return this._service.get(name).nodes
+      }, err => {
+        this._service.delete(name)
+        throw err
       })
   }
 
