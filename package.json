@@ -1,13 +1,13 @@
 {
   "name": "@mutable/meta",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Meta client for node",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "lsq",
+    "mutable",
     "meta"
   ],
   "author": "Antonio 'pelle' Pellegrino <pellepelle3@gmail.com> (http://mutable.io)",
