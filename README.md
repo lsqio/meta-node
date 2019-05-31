@@ -6,7 +6,7 @@ Mutable Meta client for node
 Service Discovery and Config manager
 ===
 
-This package is responisble for discovering services in your Mutable folder and implementing Configs that were set in Mutable's configurations tab.
+This package is a wrapper to the background service `Mutable Meta`. Mutable Meta is responsible for service discovery and service configuration.
 
 ## API
 ```js
