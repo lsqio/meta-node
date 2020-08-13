@@ -6,9 +6,9 @@ class Meta extends EventEmitter {
   constructor(){
     super()
     this._service = new Map()
-    this._config 
+    this._config
     this._configIndex = 0
-    this._services 
+    this._services
     this._servicesIndex = 0
   }
 
@@ -17,6 +17,23 @@ class Meta extends EventEmitter {
   }
 
   config () {
+    if (process.env.USE_SECRETS) {
+      this._config = {}
+      try {
+        if (process.env.CONFIG) this._config = JSON.parse(process.env.CONFIG)
+      } catch {}
+      Object.keys(process.env).forEach(key => {
+        if (key.includes("SECRET_")) {
+          try {
+            this._config[key.replace("SECRET_", "").toLowerCase()] = JSON.parse(process.env[key])
+          } catch {
+            this._config[key.replace("SECRET_", "").toLowerCase()] = process.env[key]
+          }
+        }
+      })
+      return Promise.resolve(this._config)
+    }
+
     return this._config ? Promise.resolve(this._config) : this._watchConfig()
   }
 
@@ -25,12 +42,13 @@ class Meta extends EventEmitter {
   }
 
   service (name) {
+    if (process.env.DNS) return Promise.resolve([name + (process.env.DNS_POSTFIX ? process.env.DNS_POSTFIX : "")])
     if (this._service.has(name) && this._service.get(name).nodes && this._service.get(name).nodes.length > 0)
       return Promise.resolve(this._service.get(name).nodes)
 
     if (this._service.has(name))
       return Promise.reject(new Error("Service " + name + " has no healthy instances"))
-   
+
     return this._watchService(name)
   }
 
@@ -38,7 +56,7 @@ class Meta extends EventEmitter {
     return this.service(name)
       .then(services=> services[Math.random() * services.length | 0])
   }
-  
+
   _watchConfig() {
     return this._call(`/v1/config?index=${this._configIndex}`,null,true)
       .then(res => {
@@ -49,7 +67,7 @@ class Meta extends EventEmitter {
         this._watchConfig()
 
         if(index < this._configIndex && JSON.stringify(config) !=  JSON.stringify(this._config) )
-          this.emit('configChange',this._config) 
+          this.emit('configChange',this._config)
 
         return this._config
       }, err => {
@@ -68,7 +86,7 @@ class Meta extends EventEmitter {
         this._watchServices()
 
         if(index < this._servicesIndex && JSON.stringify(services) !=  JSON.stringify(this._services))
-          this.emit('servicesChange',this._services)  
+          this.emit('servicesChange',this._services)
 
         return this._services
       }, err => {
@@ -89,7 +107,7 @@ class Meta extends EventEmitter {
         this._watchService(name)
         if(index < _index && JSON.stringify(nodes) !=  JSON.stringify(this._service.get(name).nodes))
           this.emit('serviceChange',name)
-        
+
         if (Array.isArray(res.body) && res.body.length == 0)
           throw new Error("Service " + name + " has no health instances")
 
@@ -103,14 +121,14 @@ class Meta extends EventEmitter {
   _call (path,data,full) {
     let opts = { json: true, full : full }
     let _options = {
-      path, 
+      path,
       socketPath : process.env.META_SOCKET,
       method:'GET'
     }
     if (data) {
       _options.method = 'POST'
       opts.data = JSON.stringify(data)
-    } 
+    }
 
 
     return this._request(_options,opts)
@@ -119,16 +137,16 @@ class Meta extends EventEmitter {
   _request(_options,options) {
     return new Promise((resolve, reject) => {
       _options.headers = _options.headers ? _options.headers : {}
-    
+
       if (options.json) _options.headers['Content-Type'] = 'application/json'
-    
+
       let req = http.request(_options, onRes)
       req.on('error', reject)
-      
+
       if (options.data) req.write(options.data)
-      
+
       req.end()
-      
+
       function onRes(_res) {
         if (options.encoding)
           _res.setEncoding(options.encoding)
@@ -144,13 +162,13 @@ class Meta extends EventEmitter {
           res.body = ''
           _res
             .on('data', data => res.body += data)
-            .on('end', ()=> { 
+            .on('end', ()=> {
               if(options.json)
                 try{
                   res.body = JSON.parse(res.body)
                 }catch(e){}
 
-                cb(options.full ? res : res.body) 
+                cb(options.full ? res : res.body)
             })
             .resume()
         }
