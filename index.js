@@ -21,7 +21,7 @@ class Meta extends EventEmitter {
       this._config = {}
       try {
         if (process.env.CONFIG) this._config = JSON.parse(process.env.CONFIG)
-      } catch {}
+      } catch (err) {}
       Object.keys(process.env).forEach(key => {
         if (key.includes("SECRET_")) {
           try {
